@@ -148,7 +148,7 @@ lazy val pluginWeblogs = (project in file("codefeedr-plugins/codefeedr-weblogs")
 
 lazy val dependencies =
   new {
-    val flinkVersion       = "1.4.2"
+    val flinkVersion       = "1.5.0"
     val json4sVersion      = "3.6.0-M2"
     val log4jVersion       = "2.11.0"
     val log4jScalaVersion  = "11.0"
