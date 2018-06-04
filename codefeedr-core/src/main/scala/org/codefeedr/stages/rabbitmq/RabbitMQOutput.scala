@@ -20,6 +20,7 @@ package org.codefeedr.stages.rabbitmq
 
 import java.net.URI
 
+import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.apache.flink.streaming.api.scala.DataStream
 import org.apache.flink.streaming.connectors.rabbitmq.common.RMQConnectionConfig
 import org.codefeedr.buffer.{RMQSinkDurable, RabbitMQBuffer}
@@ -36,7 +37,7 @@ import scala.reflect.runtime.universe._
   * @param stageAttributes Optional stage attributes
   * @tparam T
   */
-class RabbitMQOutput[T <: PipelineItem : ClassTag : TypeTag](queue: String,
+class RabbitMQOutput[T <: PipelineItem : ClassTag : TypeTag : TypeInformation](queue: String,
                                                                          server: URI = new URI("amqp://localhost:5672"),
                                                                          stageAttributes: StageAttributes = StageAttributes())
   extends OutputStage[T](stageAttributes) {

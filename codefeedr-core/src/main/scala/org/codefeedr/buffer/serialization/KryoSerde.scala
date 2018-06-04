@@ -21,6 +21,8 @@ package org.codefeedr.buffer.serialization
 import java.io.ByteArrayOutputStream
 
 import com.twitter.chill.{Input, Output, ScalaKryoInstantiator}
+import org.apache.flink.api.common.typeinfo.TypeInformation
+import org.apache.flink.api.scala._
 
 import scala.reflect.runtime.universe._
 import scala.reflect.ClassTag
@@ -32,7 +34,7 @@ import scala.reflect.ClassTag
   *
   * @tparam T
   */
-class KryoSerde[T <: AnyRef : TypeTag : ClassTag] extends AbstractSerde[T]{
+class KryoSerde[T <: AnyRef : TypeTag : ClassTag : TypeInformation] extends AbstractSerde[T]{
 
   /**
     * Serializes a (generic) element using Kryo.
@@ -68,5 +70,5 @@ class KryoSerde[T <: AnyRef : TypeTag : ClassTag] extends AbstractSerde[T]{
 object KryoSerde {
   val BUFFER_SIZE = 4096
 
-  def apply[T <: AnyRef : ClassTag : TypeTag]: KryoSerde[T] = new KryoSerde[T]()
+  def apply[T <: AnyRef : ClassTag : TypeTag : TypeInformation]: KryoSerde[T] = new KryoSerde[T]()
 }

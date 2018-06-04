@@ -22,6 +22,7 @@ import java.util.Date
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.scalatest.{BeforeAndAfter, FunSuite}
+import org.apache.flink.api.scala._
 
 case class KryoSimpleCaseClass(str: String, i: Int)
 case class KryoComplexCaseClass(str: String, i : Option[Int], l : List[Date])

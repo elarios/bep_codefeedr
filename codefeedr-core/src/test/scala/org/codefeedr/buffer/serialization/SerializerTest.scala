@@ -2,6 +2,7 @@ package org.codefeedr.buffer.serialization
 
 import org.codefeedr.pipeline.PipelineItem
 import org.scalatest.FunSuite
+import org.apache.flink.api.scala._
 
 class SerializerTest extends FunSuite {
 

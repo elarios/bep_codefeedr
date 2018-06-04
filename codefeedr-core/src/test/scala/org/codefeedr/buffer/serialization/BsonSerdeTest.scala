@@ -22,6 +22,7 @@ import java.util.Date
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.scalatest.{BeforeAndAfter, FunSuite}
+import org.apache.flink.api.scala._
 
 class BsonSerdeTest extends FunSuite with BeforeAndAfter {
 

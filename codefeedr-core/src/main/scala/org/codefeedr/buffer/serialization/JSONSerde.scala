@@ -20,6 +20,7 @@ package org.codefeedr.buffer.serialization
 
 import java.nio.charset.StandardCharsets
 
+import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.json4s.NoTypeHints
 import org.json4s.ext.JavaTimeSerializers
 import org.json4s.jackson.Serialization
@@ -27,7 +28,7 @@ import org.json4s.jackson.Serialization
 import scala.reflect.ClassTag
 import scala.reflect.runtime.universe._
 
-class JSONSerde[T <: AnyRef : TypeTag : ClassTag] extends AbstractSerde[T]{
+class JSONSerde[T <: AnyRef : TypeTag : ClassTag : TypeInformation] extends AbstractSerde[T]{
 
   //implicit serialization format
   implicit lazy val formats = Serialization.formats(NoTypeHints) ++ JavaTimeSerializers.all
@@ -55,5 +56,5 @@ class JSONSerde[T <: AnyRef : TypeTag : ClassTag] extends AbstractSerde[T]{
 }
 
 object JSONSerde {
-  def apply[T <: AnyRef : ClassTag : TypeTag]: JSONSerde[T] = new JSONSerde[T]()
+  def apply[T <: AnyRef : ClassTag : TypeTag : TypeInformation]: JSONSerde[T] = new JSONSerde[T]()
 }

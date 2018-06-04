@@ -67,12 +67,6 @@ class KafkaBuffer[T <: AnyRef : ClassTag : TypeTag](pipeline: Pipeline, properti
     val SCHEMA_EXPOSURE_HOST = "redis://localhost:6379"
   }
 
-  //Get type of the class at run time
-  val inputClassType: Class[T] = classTag[T].runtimeClass.asInstanceOf[Class[T]]
-
-  //get TypeInformation of generic (case) class
-  implicit val typeInfo = TypeInformation.of(inputClassType)
-
   override def getSource: DataStream[T] = {
     val serde = getSerializer
 

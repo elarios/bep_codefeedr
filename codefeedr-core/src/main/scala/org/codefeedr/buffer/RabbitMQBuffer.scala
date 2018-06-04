@@ -53,12 +53,6 @@ class RabbitMQBuffer[T <: AnyRef : ClassTag : TypeTag](pipeline: Pipeline, prope
     val URI = "amqp://localhost:5672"
   }
 
-  //Get type of the class at run time
-  val inputClassType: Class[T] = classTag[T].runtimeClass.asInstanceOf[Class[T]]
-
-  //get TypeInformation of generic (case) class
-  implicit val typeInfo = TypeInformation.of(inputClassType)
-
   override def getSource: DataStream[T] = {
     val connectionConfig = createConfig()
 

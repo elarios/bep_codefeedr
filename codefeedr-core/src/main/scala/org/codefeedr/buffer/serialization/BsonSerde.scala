@@ -19,6 +19,7 @@
 package org.codefeedr.buffer.serialization
 
 import com.mongodb.BasicDBObject
+import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.bson._
 import org.json4s.NoTypeHints
 import org.json4s.ext.JavaTimeSerializers
@@ -27,7 +28,7 @@ import org.json4s.jackson.Serialization
 import scala.reflect.runtime.universe._
 import scala.reflect.ClassTag
 
-class BsonSerde[T  <: AnyRef : TypeTag : ClassTag] extends AbstractSerde[T] {
+class BsonSerde[T  <: AnyRef : TypeTag : ClassTag : TypeInformation] extends AbstractSerde[T] {
 
   implicit lazy val formats = Serialization.formats(NoTypeHints) ++ JavaTimeSerializers.all
 
@@ -56,5 +57,5 @@ class BsonSerde[T  <: AnyRef : TypeTag : ClassTag] extends AbstractSerde[T] {
 
 //companion object to simply instantiate bson serde
 object BsonSerde {
-  def apply[T  <: AnyRef : TypeTag : ClassTag]: BsonSerde[T] = new BsonSerde[T]()
+  def apply[T  <: AnyRef : TypeTag : ClassTag : TypeInformation]: BsonSerde[T] = new BsonSerde[T]()
 }

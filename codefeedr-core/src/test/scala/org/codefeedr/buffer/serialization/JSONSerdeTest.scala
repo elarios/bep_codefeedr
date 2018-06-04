@@ -2,6 +2,7 @@ package org.codefeedr.buffer.serialization
 
 import org.apache.flink.api.common.typeinfo.TypeInformation
 import org.scalatest.{BeforeAndAfter, FunSuite}
+import org.apache.flink.api.scala._
 
 
 
