@@ -18,12 +18,13 @@
  */
 package org.codefeedr.plugins.travis.util
 
+import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import org.codefeedr.keymanager.KeyManager
 import org.codefeedr.plugins.travis.TravisProtocol.{TravisBuild, TravisBuilds, TravisRepository}
 import org.codefeedr.plugins.travis.util.TravisExceptions.{CouldNotExtractException, CouldNotGetResourceException}
 import org.codefeedr.stages.utilities.HttpRequester
 import org.json4s.ext.JavaTimeSerializers
-import org.json4s.jackson.JsonMethods.parse
+import org.json4s.jackson.JsonMethods
 import org.json4s.{DefaultFormats, Formats, JValue}
 import scalaj.http.Http
 
@@ -43,7 +44,17 @@ class TravisService(keyManager: KeyManager) extends Serializable {
     */
   def repoIsActiveFilter: String => Boolean = {
     val filter: String => Boolean = slug => {
-      val responseBody = getTravisResource("/repo/" + slug.replace("/", "%2F"))
+      var responseBody = ""
+        while (responseBody.isEmpty) {
+          try {
+            responseBody = getTravisResource("/repo/" + slug.replace("/", "%2F"))
+          } catch {
+            case e: CouldNotGetResourceException =>
+              e.printStackTrace()
+              Thread.sleep(1000)
+          }
+        }
+
       val isActive = try {
         val active = parse(responseBody).extract[TravisRepository].active.getOrElse(false)
         active
@@ -106,6 +117,15 @@ class TravisService(keyManager: KeyManager) extends Serializable {
     build
   }
 
+  def parse(json: String) = {
+    try {
+      JsonMethods.parse(json)
+    } catch {
+      case e: MismatchedInputException => println("body", json); throw e
+      case e: Throwable => e.printStackTrace(); println("body", json); throw e
+    }
+  }
+
   /**
     * Extracts a case class from a Jvalue and throws an exception if it fails
     * @param json JSon from which a case class should be extracted
@@ -132,9 +152,13 @@ class TravisService(keyManager: KeyManager) extends Serializable {
       val request = Http(url + endpoint).headers(getHeaders)
       new HttpRequester().retrieveResponse(request)
     } catch {
-      case _: Throwable =>
+      case e: Throwable =>
+        e.printStackTrace()
         throw CouldNotGetResourceException("Could not get the requested resource from: " + url + endpoint)
     }
+
+    if (response.body.isEmpty) throw CouldNotGetResourceException("Getting resource from " + url + endpoint + " returned an empty body")
+
     response.body
   }
 

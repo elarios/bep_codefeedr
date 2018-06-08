@@ -45,7 +45,7 @@ class TravisPushEventBuildInfoTransformStage(capacity: Int = 100) extends Transf
   def transform(source: DataStream[PushEventFromActiveTravisRepo]): DataStream[TravisBuild] = {
 
     AsyncDataStream.unorderedWait(source.map(x => x.pushEventItem), new TravisBuildStatusRequest(travis),
-      20, TimeUnit.MINUTES, capacity)
+      65, TimeUnit.MINUTES, capacity)
   }
 }
 /**
@@ -56,7 +56,7 @@ class TravisPushEventBuildInfoTransformStage(capacity: Int = 100) extends Transf
   */
 class TravisBuildStatusRequest(travis: TravisService) extends AsyncFunction[PushEvent, TravisBuild] {
 
-  implicit val executor: ExecutionContext =  ExecutionContext.global
+  lazy implicit val executor: ExecutionContext =  ExecutionContext.global
 
   override def asyncInvoke(input: PushEvent, resultFuture: ResultFuture[TravisBuild]): Unit = {
     // If there are no commits in the push then there will be no build

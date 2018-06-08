@@ -44,7 +44,7 @@ class TravisBuildCollector(repoOwner: String,
                            pushDate: Date,
                            travis: TravisService,
                            pollingInterval: Int = 30000,
-                           timeoutSeconds: Int = 60) {
+                           timeoutSeconds: Int = 3600) {
 
   private var minimumStartDate: Date = pushDate
   private var build: Option[TravisBuild] = None
@@ -74,7 +74,7 @@ class TravisBuildCollector(repoOwner: String,
     * Throws an exception if this is the case.
     */
   def checkIfBuildShouldBeKnownAlready(): Unit = {
-    val waitUntil = new Date(pushDate.getTime + timeoutSeconds)
+    val waitUntil = new Date(pushDate.getTime + timeoutSeconds * 1000)
     if (build.isEmpty && new Date().after(waitUntil)) {
       throw BuildNotFoundForTooLongException("Waited " + timeoutSeconds + " seconds for build, but still not found" +
         ", probably because " + repoOwner + "/" + repoName + "is not active on Travis")

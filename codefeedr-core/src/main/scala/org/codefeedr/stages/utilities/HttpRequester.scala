@@ -26,6 +26,7 @@ class HttpRequester(timeoutCap: Int = 32) extends Logging {
     } catch {
       case x: Exception if  x.getClass != classOf[RequestException] =>
       {
+        logger.error(s"${timeOut}")
         if (timeOut >= timeoutCap) throw RequestException(s"Requests timed out after $timeoutCap seconds.")
 
         logger.info(s"Failed doing a request retrying in ${timeOut * 2} in seconds.")
